@@ -1,0 +1,29 @@
+{
+	"name": "lsys/swoole-tserver",
+	"type" : "library",
+	"license": "Apache-2.0",
+	"version" : "2.0.0",
+	"description" : "thrift rpc server",
+	"require" : {
+		"lsys/swoole-thrift" : "~2.0.0",
+		"lsys/mqs" : "~2.0.0",
+		"lsys/redis" : "~2.0.0",
+		"lsys/rabbitmq" : "~2.0.0",
+		"apache/thrift": "^0.11.0",
+		"symfony/console" : "~v3.4.23",
+		"ext-swoole" : "^4.0.0"
+	},
+	"require-dev" : {
+		"eaglewu/swoole-ide-helper" : "dev-master",
+		"lsys/model" : "~2.0.0",
+		"lsys/web" : "~2.0.0",
+		"lsys/model-db-swoole" : "~2.0.0",
+		"lsys/model-tools" : "~2.0.0"
+	},
+	"autoload": {
+        "psr-4": {
+        	"LSYS\\Swoole\\TServer\\" : "src/classes/LSYS/Swoole/TServer/",
+        	"LSYS\\Swoole\\TServerTest\\" : "src/classes/LSYS/Swoole/TServerTest/"
+		}
+    }
+}
