@@ -3,24 +3,21 @@ use LSYS\Swoole\TServer\Server\Middleware\TokenMiddleware;
 use LSYS\Swoole\TServer\Server\Middleware\BreakerMiddleware;
 use LSYS\Swoole\Thrift\Server\SwooleSubject;
 use LSYS\Swoole\Thrift\Server\SwooleEvent;
-use LSYS\Swoole\TServer\SwooleObserver\TaskObserver;
 use LSYS\Swoole\TServer\Server\Swoole\TaskManager;
 /**
  * 配置服务器
  */
 class DomeMyServer extends \LSYS\Swoole\TServer\Server
 {
-    protected $task;
-    public function taskManager(){
-        if(!$this->task)$this->task=new TaskManager($this);
-        return $this->task;
-    }
     public function bootstrap(){
         //加载thrift库
         $this->thriftLoader()->registerDefinition("Information",dirname(__DIR__)."/gen-php");
         TokenMiddleware::registerDefinition($this->thriftLoader());
         
-        $this->taskManager()->task(DomeTask::class, ['data']);
+        //启动任务
+       // $this->taskManager()->task(DomeTask::class, ['data']);
+        //启动定时任务
+       // $this->timerManager()->tick(1000, DomeTimer::class);
         //这里批量注册DI
        
         //加载客户端秘钥
