@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author     Lonely <shan.liu@msn.com>
+ * @copyright  (c) 2017 Lonely <shan.liu@msn.com>
+ * @license    http://www.apache.org/licenses/LICENSE-2.0
+ */
 namespace LSYS\Swoole\TServer\MQServer;
 use LSYS\Swoole\TServer\MQServer;
 abstract class RabbitMQ extends MQServer
@@ -7,6 +12,12 @@ abstract class RabbitMQ extends MQServer
     protected $exchange;
     protected $type;
     protected $queue_name;
+    /**
+     * @param string $exchange
+     * @param string $queue_name
+     * @param string $type
+     * @param string $config
+     */
     public function __construct($exchange,$queue_name,$type='fanout',$config=null){
         $this->exchange=$exchange;
         $this->type=$type;
@@ -37,12 +48,21 @@ abstract class RabbitMQ extends MQServer
         $channel->close();
         $this->mq->close();
     }
+    /**
+     * 建议根据实际需求重写
+     * @param string $channel
+     * @param callable $callback
+     */
     protected function bind($channel,$callback){
         $channel->exchange_declare($this->exchange, $this->type, false, false, false);
         list($queue_name, ,) = $channel->queue_declare("", false, false, true, false);
         $channel->queue_bind($queue_name, $this->exchange);
         $channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
     }
+    /**
+     * 根据实际需求重写
+     * @param mixed $connection
+     */
     protected function channel($connection){
         $channel=$connection->channel();
         $callback=function ($msg){
@@ -54,7 +74,7 @@ abstract class RabbitMQ extends MQServer
             }
         };
         foreach ($this->topics() as $topic){
-            $channel->queue_bind($this->queue_name, 'topic_logs', $topic);
+            $channel->queue_bind($this->queue_name, $this->exchange, $topic);
         }
         $this->bind($channel,$callback);
         return $channel;

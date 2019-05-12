@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author     Lonely <shan.liu@msn.com>
+ * @copyright  (c) 2017 Lonely <shan.liu@msn.com>
+ * @license    http://www.apache.org/licenses/LICENSE-2.0
+ */
 namespace LSYS\Swoole\TServer\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
