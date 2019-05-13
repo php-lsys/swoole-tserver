@@ -2,10 +2,10 @@
 	"name": "lsys/swoole-tserver",
 	"type" : "library",
 	"license": "Apache-2.0",
-	"version" : "2.0.7",
+	"version" : "2.0.8",
 	"description" : "thrift rpc server",
 	"require" : {
-		"lsys/swoole-thrift" : "~2.0.0",
+		"lsys/swoole-thrift" : "~2.0.8",
 		"lsys/mqs" : "~2.0.0",
 		"lsys/redis" : "~2.0.0",
 		"lsys/rabbitmq" : "~2.0.0",
