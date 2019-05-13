@@ -100,8 +100,8 @@ class TaskManager
         $obj=$this->deRuner($data);
         if(!is_object($obj))return ;
         try{
-            $obj->onTask($this->server,$serv,$task_id,$src_worker_id,0,function($fdata)use($data,$serv){
-                $task->finish(json_encode([get_class($obj),$data[1],$fdata],JSON_UNESCAPED_UNICODE));
+            $obj->onTask($this->server,$serv,$task_id,$src_worker_id,0,function($fdata)use($obj,$data,$serv){
+                $serv->finish(json_encode([get_class($obj),$data[1],$fdata],JSON_UNESCAPED_UNICODE));
             });
         }catch (\Exception $e){
             \LSYS\Loger\DI::get()->loger()->add(\LSYS\Loger::ERROR, $e);
@@ -111,7 +111,7 @@ class TaskManager
         $obj=$this->deRuner($task->data);
         if(!is_object($obj))return ;
         try{
-            $obj->onTask($this->server,$serv,$task->id,$task->worker_id,$task->flags,function($fdata)use($task){
+            $obj->onTask($this->server,$serv,$task->id,$task->worker_id,$task->flags,function($fdata)use($obj,$task){
                 $task->finish(json_encode([get_class($obj),$task->data[1],$fdata],JSON_UNESCAPED_UNICODE));
             });
         }catch (\Exception $e){
@@ -124,6 +124,7 @@ class TaskManager
      */
     public function onFinish($subject) {
         $args=$subject->event()->eventArgs();
+        $data=[];
         if(!isset($args[2])
             ||!$data=@json_decode($args[2],true)
             ||!is_array($data)
