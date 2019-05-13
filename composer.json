@@ -8,7 +8,6 @@
 		"lsys/swoole-thrift" : "~2.0.0",
 		"lsys/mqs" : "~2.0.0",
 		"lsys/redis" : "~2.0.0",
-		"lsys/event" : "~2.0.0",
 		"lsys/rabbitmq" : "~2.0.0",
 		"apache/thrift": "^0.11.0",
 		"symfony/console" : "~v3.4.23",
