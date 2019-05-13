@@ -61,6 +61,7 @@ return array(
                     "port"=>"9809",
                     "setting"=>array(
                         'worker_num' => 2,
+                        //'task_worker_num'=>1,
                     )
                 ),
                 "app2"=>array(

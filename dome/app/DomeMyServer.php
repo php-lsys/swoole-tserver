@@ -3,7 +3,7 @@ use LSYS\Swoole\TServer\Server\Middleware\TokenMiddleware;
 use LSYS\Swoole\TServer\Server\Middleware\BreakerMiddleware;
 use LSYS\Swoole\Thrift\Server\SwooleSubject;
 use LSYS\Swoole\Thrift\Server\SwooleEvent;
-use LSYS\Swoole\TServer\Server\Swoole\TaskManager;
+use LSYS\EventManager\CallbackObserver;
 /**
  * 配置服务器
  */
@@ -14,12 +14,6 @@ class DomeMyServer extends \LSYS\Swoole\TServer\Server
         $this->thriftLoader()->registerDefinition("Information",dirname(__DIR__)."/gen-php");
         TokenMiddleware::registerDefinition($this->thriftLoader());
         
-        //启动任务
-       // $this->taskManager()->task(DomeTask::class, ['data']);
-        //启动定时任务
-       // $this->timerManager()->tick(1000, DomeTimer::class);
-        //这里批量注册DI
-       
         //加载客户端秘钥
         $this->middleware=[
             new DomeMyMiddleware(),
@@ -43,8 +37,22 @@ class DomeMyServer extends \LSYS\Swoole\TServer\Server
             },[//内置服务治理中间件
                 "test"=>[60=>1]// "方法名"=>['时间'=>'限制次数']
             ]),
-
         ];
+        $this->eventManager()->attach((new SwooleSubject(SwooleEvent::WorkerStart))->attach(new CallbackObserver(function(){
+            if(!$this->swoole()->taskworker){
+                //启动任务,必须在非TASK进程.若使用task,必须设置 task_worker_num
+               // $this->taskManager()->task(DomeTask::class, ["aa"]);
+                //启动定时任务
+//                 $this->timerManager()->tick(1000,function(){
+//                     var_dump("worker");
+//                 });
+            }else{
+                //注意:TASK进程派发task会被忽略
+//                 $this->timerManager()->tick(1000,function(){
+//                     var_dump("task");
+//                 });
+            }
+        })));
     }
     public function handler()
     {

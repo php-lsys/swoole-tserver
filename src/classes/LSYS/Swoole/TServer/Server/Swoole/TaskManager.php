@@ -19,7 +19,7 @@ class TaskManager
         $this->server->eventManager()->attach((new SwooleSubject(SwooleEvent::Finish))->attach(new CallbackObserver([$this,"onFinish"])));
     }
     /**
-     * 发送任务
+     * 发送任务,在task进程不可用,返回false
      * @param string $task_runer
      * @param array $data
      * @param int $dst_worker_id
@@ -28,9 +28,13 @@ class TaskManager
      * @return int|false
      */
     public function task($task_runer,array $data, $dst_worker_id=-1, $callback=null){
-        if(!$task_runer instanceof TaskRuner){
+        if(!class_exists($task_runer)||!(new \ReflectionClass($task_runer))->implementsInterface(TaskRuner::class)){
             throw new Exception("task args need implements taskRuner");
         }
+        if(!is_object($this->server->swoole())){
+            throw new Exception("not find swoole object,may be not start server");
+        }
+        if($this->server->swoole()->taskworker)return false;
         return $this->server->swoole()->task([$task_runer,$data], $dst_worker_id, function(\Swoole\Server $serv, $task_id, $data)use($callback){
             if(!is_callable($callback)
                 ||!$data=@json_decode($data,true)
@@ -39,7 +43,7 @@ class TaskManager
         });
     }
     /**
-     * 发送同步任务
+     * 发送同步任务,在task进程不可用,返回false
      * @param string $task_runer
      * @param array $data
      * @param int $dst_worker_id
@@ -47,13 +51,17 @@ class TaskManager
      * @return int|false
      */
     public function taskwait($task_runer,array $data, $dst_worker_id=-1){
-        if(!$task_runer instanceof TaskRuner){
+        if(!class_exists($task_runer)||!(new \ReflectionClass($task_runer))->implementsInterface(TaskRuner::class)){
             throw new Exception("task args need implements taskRuner");
         }
+        if(!is_object($this->server->swoole())){
+            throw new Exception("not find swoole object,may be not start server");
+        }
+        if($this->server->swoole()->taskworker)return false;
         return $this->server->swoole()->taskwait([$task_runer,$data], $dst_worker_id);
     }
     /**
-     * 执行批量任务
+     * 执行批量任务,在task进程不可用,返回false
      * $task 参数：[
      *     task_class,[data1,data2],
      *     task_class,[data1,data2],
@@ -64,9 +72,13 @@ class TaskManager
      */
     public function taskWaitMulti(array $tasks,$timeout){
         foreach ($tasks as $v){
-            assert(isset($v[0])&&$v[0] instanceof TaskRuner);
+            assert(isset($v[0])&&class_exists($v[0])&&(new \ReflectionClass($v[0]))->implementsInterface(TaskRuner::class));
             assert(isset($v[1])&&is_array($v[1]));
         }
+        if(!is_object($this->server->swoole())){
+            throw new Exception("not find swoole object,may be not start server");
+        }
+        if($this->server->swoole()->taskworker)return false;
         return $this->server->swoole()->taskWaitMulti($tasks,$timeout);
     }
     /**

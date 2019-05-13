@@ -72,11 +72,16 @@ abstract class Server
         $this->event_manager->attach((new SwooleSubject(SwooleEvent::WorkerStart))->attach(
             new CallbackObserver(function(){
                 $title=@cli_get_process_title();
-                if(!empty($title))return ;
-                Kernel::processName($title."-worker");
+                if(empty($title))return ;
+                if($this->swoole()->taskworker)$name=$title."-task";
+                else $name=$title."-work";
+                Kernel::processName($name,false,"");
             })
         ));
         $this->bootstrap();
+        if(isset($builder->config()['setting']['task_worker_num'])&&$builder->config()['setting']['task_worker_num']>0){
+            $this->taskManager();
+        }
     }
     /**
      * 得到任务管理器(不太建议用)
@@ -166,7 +171,7 @@ abstract class Server
         }
         $processor = $this->processor($handler);
         $protocol = $this->protocolFactory();
-        $this->server = new \LSYS\Swoole\Thrift\Server\TSwooleServer($processor, $swoole, $protocol, $protocol);
+        $this->server = new \LSYS\Swoole\Thrift\Server\TSwooleServer($processor, $swoole, $protocol, $protocol,$this->event_manager);
         return $this;
     }
     /**

@@ -104,7 +104,7 @@ class TimerManager
         if (is_callable($timer_runer)){
             return call_user_func($callback,$msec,$timer_runer,$param);
         }
-        if(is_string($timer_runer)&&$timer_runer instanceof timerRuner){
+        if(is_string($timer_runer)&&class_exists($timer_runer)&&(new \ReflectionClass($timer_runer))->implementsInterface(TimerRuner::class)){
             $obj=(new \ReflectionClass($timer_runer))->newInstanceArgs(is_array($param)?$param:[$param]);
             return call_user_func($callback,$msec,function()use($obj){
                 return $obj->exec($this->server);

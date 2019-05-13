@@ -33,7 +33,10 @@ class ServerBuilder
      * @param array $config
      * @return \LSYS\Swoole\TServer\ServerBuilder
      */
-    public function config(array $config){
+    public function config(array $config=null){
+        if(is_null($config)){
+            return is_array($this->config)?$this->config:[];
+        }
         $this->config=$config;
         return $this;
     }

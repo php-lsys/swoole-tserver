@@ -18,10 +18,10 @@ class Kernel
      * @param boolean $return 是否只返回不设置
      * @return string|boolean
      */
-    public static function processName($processTitle,$return=false) {
+    public static function processName($processTitle,$return=false,$php="") {
         $processTitle=preg_replace("/[^0-9a-z]/i", "-", strtolower($processTitle));
         $processTitle=preg_replace("/\-+/", "-", strtolower($processTitle));
-        $processTitle="php ".trim($processTitle,"-");
+        $processTitle=$php.trim($processTitle,"-");
         if($return)return $processTitle;
         if (\function_exists('cli_set_process_title')) {
             if (!@cli_set_process_title($processTitle)) {

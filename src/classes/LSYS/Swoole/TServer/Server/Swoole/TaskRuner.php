@@ -19,7 +19,7 @@ interface TaskRuner
      * @param number $task_flags
      * @param callable $finish
      */
-    abstract public function onTask(Server $server,\Swoole\Server $swoole_serv,$task_id,$src_worker_id,$task_flags=0,callable $finish);
+    public function onTask(Server $server,\Swoole\Server $swoole_serv,$task_id,$src_worker_id,$task_flags=0,callable $finish);
     /**
      * 任务完成时执行代码,在worker中执行
      * $data 为ontask中$finish中调用时传入的参数
@@ -28,5 +28,5 @@ interface TaskRuner
      * @param int $task_id
      * @param mixed $data
      */
-    abstract public function onFinish(Server $server,\Swoole\Server $swoole_serv,$task_id, $data);
+    public function onFinish(Server $server,\Swoole\Server $swoole_serv,$task_id, $data);
 }
