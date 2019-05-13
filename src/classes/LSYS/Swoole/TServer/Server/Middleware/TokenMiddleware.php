@@ -39,7 +39,7 @@ class TokenMiddleware implements Middleware
         if($token){
             $_token=call_user_func($this->token_finder,$token->platform);
             $sign_token=null;
-            if(!$this->checkToken($this->server->getServerBuilder()->configName(), $_token, $token, $this->timeout, $sign_token)){
+            if(!$this->checkToken($this->server->serverBuilder()->configName(), $_token, $token, $this->timeout, $sign_token)){
                 if (\LSYS\Core::$environment===\LSYS\Core::PRODUCT)$sign_token="";
                 else $sign_token="[{$sign_token}:{$_token}]";
                 $msg="sign is wrong ".$sign_token;

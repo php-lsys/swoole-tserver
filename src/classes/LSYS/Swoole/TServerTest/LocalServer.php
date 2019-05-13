@@ -46,7 +46,16 @@ abstract class LocalServer extends Server
     public function processor($handler){
         throw new Exception("local test server not support ".__METHOD__." method");
     }
-    public function getServerBuilder(){
+    public function serverBuilder(){
+        throw new Exception("local test server not support ".__METHOD__." method");
+    }
+    public function taskManager(){
+        throw new Exception("local test server not support ".__METHOD__." method");
+    }
+    public function timerManager(){
+        throw new Exception("local test server not support ".__METHOD__." method");
+    }
+    public function eventManager(){
         throw new Exception("local test server not support ".__METHOD__." method");
     }
 }
