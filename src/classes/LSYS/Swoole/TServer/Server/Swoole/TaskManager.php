@@ -15,8 +15,8 @@ class TaskManager
     protected $server;
     public function __construct(Server $server) {
         $this->server=$server;
-        $this->server->getEventManager()->attach((new SwooleSubject(SwooleEvent::Task))->attach(new CallbackObserver([$this,"onTask"])));
-        $this->server->getEventManager()->attach((new SwooleSubject(SwooleEvent::Finish))->attach(new CallbackObserver($this,"onFinish")));
+        $this->server->eventManager()->attach((new SwooleSubject(SwooleEvent::Task))->attach(new CallbackObserver([$this,"onTask"])));
+        $this->server->eventManager()->attach((new SwooleSubject(SwooleEvent::Finish))->attach(new CallbackObserver($this,"onFinish")));
     }
     /**
      * 发送任务
