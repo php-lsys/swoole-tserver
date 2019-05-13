@@ -98,14 +98,14 @@ abstract class Server
      * 获得服务器事件管理器
      * @return \LSYS\Swoole\Thrift\Server\SwooleEventManager
      */
-    public function getEventManager(){
+    public function eventManager(){
         return $this->event_manager;
     }
     /**
      * 得到构建服务的构建对象
      * @return \LSYS\Swoole\TServer\ServerBuilder
      */
-    public function getServerBuilder(){
+    public function serverBuilder(){
         return $this->builder;
     }
     /**
