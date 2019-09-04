@@ -6,17 +6,16 @@
  */
 namespace LSYS\Swoole\TServer\Server\Swoole;
 use LSYS\Swoole\TServer\Server;
-use LSYS\Swoole\Thrift\Server\SwooleSubject;
-use LSYS\Swoole\Thrift\Server\SwooleEvent;
-use LSYS\EventManager\CallbackObserver;
 use LSYS\Swoole\TServer\Exception;
+use LSYS\EventManager\Event;
+use LSYS\Swoole\Thrift\Server\EventManager\SwooleEvent;
 class TaskManager 
 {
     protected $server;
     public function __construct(Server $server) {
         $this->server=$server;
-        $this->server->eventManager()->attach((new SwooleSubject(SwooleEvent::Task))->attach(new CallbackObserver([$this,"onTask"])));
-        $this->server->eventManager()->attach((new SwooleSubject(SwooleEvent::Finish))->attach(new CallbackObserver([$this,"onFinish"])));
+        $this->server->eventManager()->attach(new \LSYS\EventManager\EventCallback(SwooleEvent::Task,[$this,"onTask"]));
+        $this->server->eventManager()->attach(new \LSYS\EventManager\EventCallback(SwooleEvent::Finish,[$this,"onFinish"]));
     }
     /**
      * 发送任务,在task进程不可用,返回false
@@ -83,13 +82,15 @@ class TaskManager
     }
     /**
      * swoole回调函数
-     * @param SwooleSubject $subject
+     * @param Event $event
      */
-    public function onTask($subject) {
+    public function onTask(Event $event) {
+        $data=$event->data();
+        if (!is_array($data))return ;
         if(\Swoole\Coroutine::getuid()==-1){
-            call_user_func_array([$this,"onTask_"], $subject->event()->eventArgs());
+            call_user_func_array([$this,"onTask_"], $data);
         }else{
-            call_user_func_array([$this,"onTaskCo_"], $subject->event()->eventArgs());
+            call_user_func_array([$this,"onTaskCo_"], $data);
         }
     }
     /**
@@ -132,10 +133,11 @@ class TaskManager
     }
     /**
      * swoole回调函数
-     * @param SwooleSubject $subject
+     * @param Event $event
      */
-    public function onFinish($subject) {
-        $args=$subject->event()->eventArgs();
+    public function onFinish(Event $event) {
+        $args=$event->data();
+        if (!is_array($args))return ;
         $data=[];
         if(!isset($args[2])
             ||!$data=@json_decode($args[2],true)

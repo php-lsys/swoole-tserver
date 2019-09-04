@@ -1,9 +1,8 @@
 <?php
 use LSYS\Swoole\TServer\Server\Middleware\TokenMiddleware;
 use LSYS\Swoole\TServer\Server\Middleware\BreakerMiddleware;
-use LSYS\Swoole\Thrift\Server\SwooleSubject;
-use LSYS\Swoole\Thrift\Server\SwooleEvent;
-use LSYS\EventManager\CallbackObserver;
+use LSYS\EventManager\EventCallback;
+use LSYS\Swoole\Thrift\Server\EventManager\SwooleEvent;
 /**
  * 配置服务器
  */
@@ -38,8 +37,8 @@ class DomeMyServer extends \LSYS\Swoole\TServer\Server
                 "test"=>[60=>1]// "方法名"=>['时间'=>'限制次数']
             ]),
         ];
-        $this->eventManager()->attach((new SwooleSubject(SwooleEvent::WorkerStart))->attach(new CallbackObserver(function(){
-            if(!$this->swoole()->taskworker){
+        $this->eventManager()->attach(new EventCallback(SwooleEvent::WorkerStart,function(SwooleEvent $event){
+            if(!$event->TSwooleServer()->swooleServer()->taskworker){
                 //启动任务,必须在非TASK进程.若使用task,必须设置 task_worker_num
                // $this->taskManager()->task(DomeTask::class, ["aa"]);
                 //启动定时任务
@@ -52,7 +51,7 @@ class DomeMyServer extends \LSYS\Swoole\TServer\Server
 //                     var_dump("task");
 //                 });
             }
-        })));
+        }));
     }
     public function handler()
     {

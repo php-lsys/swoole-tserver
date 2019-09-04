@@ -11,12 +11,10 @@ use Thrift\ClassLoader\ThriftClassLoader;
 use LSYS\Swoole\TServer\Server\HandlerProxy;
 use LSYS\Swoole\TServer\Server\Middleware;
 use LSYS\Swoole\TServer\Server\Convert;
-use LSYS\Swoole\Thrift\Server\SwooleEventManager;
-use LSYS\Swoole\Thrift\Server\SwooleSubject;
-use LSYS\Swoole\Thrift\Server\SwooleEvent;
-use LSYS\EventManager\CallbackObserver;
 use LSYS\Swoole\TServer\Server\Swoole\TaskManager;
 use LSYS\Swoole\TServer\Server\Swoole\TimerManager;
+use LSYS\EventManager;
+use LSYS\Swoole\Thrift\Server\EventManager\SwooleEvent;
 abstract class Server
 {
     /**
@@ -49,7 +47,7 @@ abstract class Server
     private $timer_manger;
     /**
      * 服务器事件管理器
-     * @var SwooleEventManager
+     * @var EventManager
      */
     protected $event_manager;
     /**
@@ -66,18 +64,16 @@ abstract class Server
      * 服务基类
      * @param ServerBuilder $builder
      */
-    public function __construct(ServerBuilder $builder,SwooleEventManager $event_manager=null) {
+    public function __construct(ServerBuilder $builder,EventManager $event_manager=null) {
         $this->builder=$builder;
-        $this->event_manager=$event_manager?$event_manager:new SwooleEventManager();
-        $this->event_manager->attach((new SwooleSubject(SwooleEvent::WorkerStart))->attach(
-            new CallbackObserver(function(){
+        $this->event_manager=$event_manager?$event_manager:\LSYS\EventManager\DI::get()->eventManager();
+        $this->event_manager->attach(new \LSYS\EventManager\EventCallback(SwooleEvent::WorkerStart,function(){
                 $title=@cli_get_process_title();
                 if(empty($title))return ;
                 if($this->swoole()->taskworker)$name=$title."-task";
                 else $name=$title."-work";
                 Kernel::processName($name,false,"");
-            })
-        ));
+        }));
         $this->bootstrap();
         if(isset($builder->config()['setting']['task_worker_num'])&&$builder->config()['setting']['task_worker_num']>0){
             $this->taskManager();
@@ -101,7 +97,7 @@ abstract class Server
     }
     /**
      * 获得服务器事件管理器
-     * @return \LSYS\Swoole\Thrift\Server\SwooleEventManager
+     * @return EventManager
      */
     public function eventManager(){
         return $this->event_manager;
