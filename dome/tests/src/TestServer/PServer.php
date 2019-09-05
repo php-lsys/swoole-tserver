@@ -21,7 +21,7 @@ class PServer extends LocalServer
             return (new \LSYS\Model\DI())
             ->modelDB(new SingletonCallback(function(){
                 $db=\LSYS\Database\DI::get()->db("database.mysqli");
-                return new \LSYS\Model\Database\Database($db);
+                return new \LSYS\Model\Database\Database\MYSQL($db);
             }));
         });
         //$this->thriftLoader()->register();
