@@ -15,9 +15,7 @@
 	"require-dev" : {
 		"eaglewu/swoole-ide-helper" : "dev-master",
 		"lsys/model" : "~2.1.0",
-		"lsys/web" : "~2.1.0",
-		"lsys/model-db-swoole" : "~2.1.0",
-		"lsys/model-tools" : "~2.1.0"
+		"lsys/web" : "~2.1.0"
 	},
 	"autoload": {
         "psr-4": {
