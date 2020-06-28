@@ -10,7 +10,6 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
     echo 'See https://getcomposer.org to get Composer.' . PHP_EOL;
     exit(1);
 }
-//\LSYS\Core::$environment=\LSYS\Core::PRODUCT;
 (new ThriftLoader())
     ->middlewareLoader()
     ->setDefinition(dirname(__DIR__)."/bootstrap/gen-php", ['Information'])

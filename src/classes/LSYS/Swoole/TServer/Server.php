@@ -206,7 +206,7 @@ abstract class Server
     }
     /**
      * 执行服务
-     * @return boolean
+     * @return int
      */
     public function run()
     {

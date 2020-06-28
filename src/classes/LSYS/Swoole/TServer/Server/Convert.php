@@ -36,7 +36,7 @@ class Convert{
      */
     public function render($data,$model,array $map=[],array $args=null) {
         //开发阶段检测下,防止传错
-        \LSYS\Core::$environment!=\LSYS\Core::PRODUCT&&assert(property_exists($model, '_TSPEC'));
+        if(!\LSYS\Core::envIs(\LSYS\Core::PRODUCT))assert(property_exists($model, '_TSPEC'));
         foreach ($this->thrift_render as $render) {
             if($render->renderMatch($data,$model,$args)){
                 return $render->render($data, $model,$map,$args);
@@ -52,7 +52,7 @@ class Convert{
      * @return array|mixed
      */
     public function asArray($model_object,array $map=[],array $args=null) {
-        \LSYS\Core::$environment!=\LSYS\Core::PRODUCT&&assert(property_exists($model_object, '_TSPEC'));
+        if(!\LSYS\Core::envIs(\LSYS\Core::PRODUCT))assert(property_exists($model_object, '_TSPEC'));
         foreach ($this->array_render as $render) {
             if($render->asArrayMatch($model_object,$args)){
                 return $render->asArray($model_object,$map,$args);
