@@ -6,8 +6,7 @@ use LSYS\MQS\Sender\SendCall;
 use LSYS\MQS\DataCode\Simple;
 
 /**
- *
- * @method DomeProductClient|MYClientProxy product(ClientProxy $client=null,$config=null)
+ * @method DomeProductClient|DomeMYClientProxy product(ClientProxy $client=null,$config=null)
  * @method MQSender mq1()
  */
 class DomeMYDI extends \LSYS\DI
@@ -26,7 +25,10 @@ class DomeMYDI extends \LSYS\DI
     {
         $di = parent::get();
         // 这里定义客户端实例得到的方法
-        ! isset($di->product) && $di->product(new \LSYS\DI\MethodCallback(\DomeMYClientProxy::diMethod(self::$config, DomeProductClient::class)));
+        ! isset($di->product) && $di->product(new \LSYS\DI\MethodCallback(function(){
+            $config=\LSYS\Config\DI::get()->config(self::$config);
+            return DomeMYClientProxy::create(DomeProductClient::class, $config);
+        }));
         ! isset($di->mq1) && $di->mq1(new SingletonCallback(function(){
             return new MQSender(new SendCall(function($topic,$msg,$dealy){
                 //这里可以使用连接池处理

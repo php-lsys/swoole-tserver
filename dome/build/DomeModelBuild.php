@@ -16,7 +16,7 @@ class DomeModelBuild extends TraitBuild{
     public function db(){
         return $this->_db;
     }
-    public function listTables()
+    public function listTables():array
     {
         $sql='SHOW TABLES';
         $out=[];
@@ -25,11 +25,11 @@ class DomeModelBuild extends TraitBuild{
         }
         return $out;
     }
-    public function tablePrefix(){
+    public function tablePrefix():string{
         $config=$this->_mysql->getConfig();
         return isset($config['table_prefix'])?$config['table_prefix']:"";
     }
-    public function message($table,$msg){
+    public function message(string $table,string $msg):void{
         echo $table.":".$msg."\n";
     }
 }

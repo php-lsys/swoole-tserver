@@ -31,14 +31,14 @@ class DomeThriftTableBuild extends \LSYS\Swoole\Thrift\Tools\TableThriftBuild{
         $config=$this->_mysql->getConfig();
         return isset($config['table_prefix'])?$config['table_prefix']:"";
     }
-    public function message($table,$msg){
+    public function message(string $table,string  $msg){
         echo $table.$msg."\n";
     }
     /**
      * {@inheritDoc}
      * @see \LSYS\Swoole\Thrift\Tools\TableThriftBuild::listColumns()
      */
-    public function listColumns($table)
+    public function listColumns($table):array
     {
         $columnset=$this->_db->listColumns($table);
         $out=[];
