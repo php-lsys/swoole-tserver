@@ -8,7 +8,7 @@ class DomeModelBuild extends TraitBuild{
         $this->setSaveDir(dirname(__DIR__))
             ->setNamespace("Model")
         ;
-        $this->_mysql=\LSYS\Swoole\Coroutine\DI::get()->swoole_mysql();
+        $this->_mysql=\LSYS\Swoole\Coroutine\DI::get()->swoole_mysql("swoole.mysql.master.connection");
         $this->_db=new MYSQL(function(){
             return $this->_mysql;
         });
