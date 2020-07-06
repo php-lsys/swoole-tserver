@@ -19,8 +19,7 @@
 	},
 	"autoload": {
         "psr-4": {
-        	"LSYS\\Swoole\\TServer\\" : "src/classes/LSYS/Swoole/TServer/",
-        	"LSYS\\Swoole\\TServerTest\\" : "src/classes/LSYS/Swoole/TServerTest/"
+        	"LSYS\\Swoole\\TServer\\" : "src/classes/LSYS/Swoole/TServer/"
 		}
     }
 }
