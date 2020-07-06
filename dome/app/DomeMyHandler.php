@@ -14,6 +14,9 @@ class DomeMyHandler extends Handler implements DomeProductIf
 //             'TTBpageCountSS'=>22,
 //             'TTBcountSS'=>11111
 //         ], \Information\DomeResultPage::class,[],[null,'TT','SS']);//赋值时取出前后缀
+//         $order=new \Model\ModelOrder();
+//         $res=$order->dbBuilder()->limit(1)->findAll();
+        
         $res=$this->convert->render([
             'page'=>100,
             'pageCount'=>22,//跟模型对不上的手动映射

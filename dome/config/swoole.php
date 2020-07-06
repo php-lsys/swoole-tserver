@@ -1,9 +1,9 @@
 <?php
 return array(
-    "mysql"=>array(
+    "mysql_pool"=>array(
         "try"=>true,//发送错误重试次数,设置为TRUE为不限制
         "sleep"=>1,//断开连接重连暂停时间
-        "table_prefix"=>"t_",//断开连接重连暂停时间
+        "table_prefix"=>"l_",//断开连接重连暂停时间
         "master"=>array(
             "size"=>5,//队列长度
 			//设置下面两个会清理释放空闲链接

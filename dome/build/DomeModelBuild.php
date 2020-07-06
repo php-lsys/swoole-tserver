@@ -8,7 +8,7 @@ class DomeModelBuild extends TraitBuild{
         $this->setSaveDir(dirname(__DIR__))
             ->setNamespace("Model")
         ;
-        $this->_mysql=\LSYS\Swoole\Coroutine\DI::get()->swoole_mysql("swoole.mysql.master.connection");
+        $this->_mysql=\LSYS\Swoole\Coroutine\DI::get()->swoole_mysql("swoole.mysql_pool.master.connection");
         $this->_db=new MYSQL(function(){
             return $this->_mysql;
         });
@@ -26,8 +26,7 @@ class DomeModelBuild extends TraitBuild{
         return $out;
     }
     public function tablePrefix():string{
-        $config=$this->_mysql->getConfig();
-        return isset($config['table_prefix'])?$config['table_prefix']:"";
+        return strval(\LSYS\Config\DI::get()->config("swoole.mysql_pool")->get("table_prefix"));
     }
     public function message(string $table,string $msg):void{
         echo $table.":".$msg."\n";
