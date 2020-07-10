@@ -1,17 +1,16 @@
 <?php
 use LSYS\Model\Tools\TraitBuild;
-use LSYS\Model\Database\Swoole\MYSQL;
+use LSYS\Model\Database\Swoole\MYSQLPool;
 //通过数据库生成模型实现类
 class DomeModelBuild extends TraitBuild{
+    protected $_mysql;
     protected $_db;
     public function __construct(){
         $this->setSaveDir(dirname(__DIR__))
             ->setNamespace("Model")
         ;
-        $this->_mysql=\LSYS\Swoole\Coroutine\DI::get()->swoole_mysql("swoole.mysql_pool.master.connection");
-        $this->_db=new MYSQL(function(){
-            return $this->_mysql;
-        });
+        $this->_mysql=\LSYS\Swoole\Coroutine\MySQLPool\DI::get()->swoole_mysql_pool();
+        $this->_db=new MYSQLPool($this->_mysql);
     }
     public function db(){
         return $this->_db;
@@ -26,7 +25,7 @@ class DomeModelBuild extends TraitBuild{
         return $out;
     }
     public function tablePrefix():string{
-        return strval(\LSYS\Config\DI::get()->config("swoole.mysql_pool")->get("table_prefix"));
+        return strval($this->_mysql->config()->get("table_prefix"));
     }
     public function message(string $table,string $msg):void{
         echo $table.":".$msg."\n";
